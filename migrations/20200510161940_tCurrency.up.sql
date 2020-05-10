@@ -5,3 +5,5 @@ create table dbo.Currency
     Value decimal(9, 5)    not null,
     constraint PK_Currency primary key (Id),
 )
+
+insert into dbo.Currency (Code, Value) values ('USD', 1), ('EUR', 0.93)
