@@ -3,13 +3,12 @@ package server
 import (
 	"context"
 	"github.com/aibotsoft/config-service/services/handler"
-	pb "github.com/aibotsoft/gen/fortedpb"
+	pb "github.com/aibotsoft/gen/confpb"
 	"github.com/aibotsoft/micro/config"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-	"net"
-
 	"google.golang.org/grpc"
+	"net"
 )
 
 type Server struct {
@@ -17,7 +16,7 @@ type Server struct {
 	log     *zap.SugaredLogger
 	gs      *grpc.Server
 	handler *handler.Handler
-	pb.UnimplementedFortedServer
+	pb.UnimplementedConfServer
 }
 
 func NewServer(cfg *config.Config, log *zap.SugaredLogger, handler *handler.Handler) *Server {
@@ -30,7 +29,7 @@ func (s *Server) Serve() error {
 	if err != nil {
 		return errors.Wrap(err, "net.Listen error")
 	}
-	pb.RegisterFortedServer(s.gs, s)
+	pb.RegisterConfServer(s.gs, s)
 	s.log.Infow("gRPC server listens", "service", s.cfg.Service.Name, "addr", addr)
 	return s.gs.Serve(lis)
 }
@@ -45,7 +44,7 @@ func (*Server) Ping(ctx context.Context, req *pb.PingRequest) (*pb.PingResponse,
 }
 func (s *Server) GetConfig(ctx context.Context, req *pb.GetConfigRequest) (*pb.GetConfigResponse, error) {
 	s.handler.GetConfig(ctx, req.GetServiceName())
-	return &pb.GetConfigResponse{pb.ServiceConfig{
+	return &pb.GetConfigResponse{ServiceConfig: pb.ServiceConfig{
 		GrpcPort: 0,
 	}}, nil
 }

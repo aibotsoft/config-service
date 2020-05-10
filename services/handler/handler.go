@@ -3,7 +3,7 @@ package handler
 import (
 	"context"
 	"github.com/aibotsoft/config-service/pkg/store"
-	pb "github.com/aibotsoft/gen/fortedpb"
+	pb "github.com/aibotsoft/gen/confpb"
 	"github.com/aibotsoft/micro/config"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
