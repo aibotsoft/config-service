@@ -39,3 +39,10 @@ func TestHandler_GetAccount(t *testing.T) {
 		assert.NotEmpty(t, got)
 	}
 }
+
+func TestHandler_GetCurrency(t *testing.T) {
+	got, err := h.GetCurrency(context.Background())
+	if assert.NoError(t, err) {
+		assert.NotEmpty(t, got)
+	}
+}

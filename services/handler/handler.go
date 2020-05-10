@@ -37,6 +37,6 @@ func (h *Handler) GetAccount(ctx context.Context, name string) (pb.Account, erro
 	return h.store.GetAccountByName(ctx, name)
 
 }
-func (h *Handler) GetCurrency(ctx context.Context) {
+func (h *Handler) GetCurrency(ctx context.Context) ([]pb.Currency, error) {
 	return h.store.GetCurrency(ctx)
 }

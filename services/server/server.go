@@ -60,6 +60,10 @@ func (s *Server) GetAccount(ctx context.Context, req *pb.GetAccountRequest) (*pb
 	return &pb.GetAccountResponse{Account: account}, nil
 }
 func (s *Server) GetCurrency(ctx context.Context, req *pb.GetCurrencyRequest) (*pb.GetCurrencyResponse, error) {
-	s.handler.GetCurrency(ctx)
-	return nil, status.Errorf(codes.Unimplemented, "method GetCurrency not implemented")
+	currency, err := s.handler.GetCurrency(ctx)
+	if err != nil {
+		s.log.Infow("get currency error")
+		return nil, status.Errorf(codes.Internal, "get currency error")
+	}
+	return &pb.GetCurrencyResponse{CurrencyList: currency}, nil
 }
