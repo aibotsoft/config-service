@@ -10,21 +10,30 @@ import (
 	"testing"
 )
 
-func InitHelper(t *testing.T) *Handler {
-	t.Helper()
+var h *Handler
+
+func TestMain(m *testing.M) {
 	cfg := config.New()
 	log := logger.New()
 	db := sqlserver.MustConnectX(cfg)
 	sto := store.NewStore(cfg, log, db)
-	h := NewHandler(cfg, log, sto)
-	return h
+	h = NewHandler(cfg, log, sto)
+	m.Run()
+	h.Close()
 }
 
 func TestHandler_GetConfig(t *testing.T) {
-	h := InitHelper(t)
 	got, err := h.GetConfig(context.Background(), "fuck-off")
 	assert.Error(t, err)
 	got, err = h.GetConfig(context.Background(), "config-service")
+	if assert.NoError(t, err) {
+		assert.NotEmpty(t, got)
+	}
+}
+
+func TestHandler_GetAccount(t *testing.T) {
+	got, err := h.GetAccount(context.Background(), "fuck-off")
+	assert.Error(t, err)
 	if assert.NoError(t, err) {
 		assert.NotEmpty(t, got)
 	}
