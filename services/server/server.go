@@ -8,6 +8,8 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"net"
 )
 
@@ -43,8 +45,16 @@ func (*Server) Ping(ctx context.Context, req *pb.PingRequest) (*pb.PingResponse,
 	return &pb.PingResponse{}, nil
 }
 func (s *Server) GetConfig(ctx context.Context, req *pb.GetConfigRequest) (*pb.GetConfigResponse, error) {
-	s.handler.GetConfig(ctx, req.GetServiceName())
-	return &pb.GetConfigResponse{ServiceConfig: pb.ServiceConfig{
-		GrpcPort: 0,
-	}}, nil
+	got, err := s.handler.GetConfig(ctx, req.GetServiceName())
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "config not fount for service: %q", req.GetServiceName())
+	}
+	return &pb.GetConfigResponse{ServiceConfig: got}, nil
+}
+func (s *Server) GetAccount(ctx context.Context, req *pb.GetAccountRequest) (*pb.GetAccountResponse, error) {
+	account, err := s.handler.GetAccount(ctx, req.GetServiceName())
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "account not fount for service: %q", req.GetServiceName())
+	}
+	return &pb.GetAccountResponse{Account: account}, nil
 }

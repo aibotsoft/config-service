@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	pb "github.com/aibotsoft/gen/confpb"
 	"github.com/aibotsoft/micro/cache"
 	"github.com/aibotsoft/micro/config"
 	"github.com/dgraph-io/ristretto"
@@ -36,6 +37,15 @@ func (s *Store) GetPortByName(ctx context.Context, serviceName string) (int64, e
 	}
 	s.Cache.Set(serviceName, port, 1)
 	return port, nil
+}
+
+func (s *Store) GetAccountByName(ctx context.Context, name string) (pb.Account, error) {
+	var acc pb.Account
+	err := s.db.GetContext(ctx, acc, "select * from dbo.Account")
+	if err != nil {
+		return pb.Account{}, err
+	}
+	return acc, nil
 }
 
 func NewStore(cfg *config.Config, log *zap.SugaredLogger, db *sqlx.DB) *Store {

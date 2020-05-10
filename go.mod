@@ -3,7 +3,7 @@ module github.com/aibotsoft/config-service
 go 1.14
 
 require (
-	github.com/aibotsoft/gen v0.0.0-20200426084831-65c8a4083243
+	github.com/aibotsoft/gen v0.0.0-20200510070600-b4df9155b7be
 	github.com/aibotsoft/micro v0.0.0-20200507184600-261b9f247278
 	github.com/dgraph-io/ristretto v0.0.2
 	github.com/jmoiron/sqlx v1.2.0

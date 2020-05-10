@@ -11,4 +11,5 @@ values ('forted-service', 50051),
        ('surebet-service', 50052),
        ('sbo-service', 50053),
        ('pin-service', 50054),
-       ('config-service', 50055)
+       ('config-service', 50055),
+       ('daf-service', 50056)

@@ -28,6 +28,11 @@ func (h *Handler) GetConfig(ctx context.Context, serviceName string) (pb.Service
 	return pb.ServiceConfig{GrpcPort: grpcPort}, nil
 
 }
+
+func (h *Handler) GetAccount(ctx context.Context, name string) (pb.Account, error) {
+	return h.store.GetAccountByName(ctx, name)
+
+}
 func NewHandler(cfg *config.Config, log *zap.SugaredLogger, store *store.Store) *Handler {
 	return &Handler{cfg: cfg, log: log, store: store}
 }
