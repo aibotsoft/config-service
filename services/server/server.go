@@ -54,6 +54,7 @@ func (s *Server) GetConfig(ctx context.Context, req *pb.GetConfigRequest) (*pb.G
 func (s *Server) GetAccount(ctx context.Context, req *pb.GetAccountRequest) (*pb.GetAccountResponse, error) {
 	account, err := s.handler.GetAccount(ctx, req.GetServiceName())
 	if err != nil {
+		s.log.Infow("account not fount for service", "name", req.GetServiceName())
 		return nil, status.Errorf(codes.NotFound, "account not fount for service: %q", req.GetServiceName())
 	}
 	return &pb.GetAccountResponse{Account: account}, nil

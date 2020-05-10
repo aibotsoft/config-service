@@ -6,6 +6,7 @@ create table dbo.Port
     constraint PK_Port primary key (Id),
     constraint UI_GrpcPort unique (GrpcPort),
 )
+
 insert into dbo.Port (ServiceName, GrpcPort)
 values ('forted-service', 50051),
        ('surebet-service', 50052),
