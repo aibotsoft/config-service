@@ -17,6 +17,10 @@ type Store struct {
 	Cache *ristretto.Cache
 }
 
+func NewStore(cfg *config.Config, log *zap.SugaredLogger, db *sqlx.DB) *Store {
+	return &Store{log: log, db: db, Cache: cache.NewCache(cfg)}
+}
+
 func (s *Store) Close() {
 	err := s.db.Close()
 	if err != nil {
@@ -45,6 +49,8 @@ func (s *Store) GetAccountByName(ctx context.Context, name string) (pb.Account, 
 	return acc, err
 }
 
-func NewStore(cfg *config.Config, log *zap.SugaredLogger, db *sqlx.DB) *Store {
-	return &Store{log: log, db: db, Cache: cache.NewCache(cfg)}
+func (s *Store) GetCurrency(ctx context.Context) ([]pb.Currency, error) {
+	var cur []pb.Currency
+	err := s.db.SelectContext(ctx, &cur, "select * from dbo.Currency")
+	return cur, err
 }

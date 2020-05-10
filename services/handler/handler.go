@@ -16,6 +16,10 @@ type Handler struct {
 	store *store.Store
 }
 
+func NewHandler(cfg *config.Config, log *zap.SugaredLogger, store *store.Store) *Handler {
+	return &Handler{cfg: cfg, log: log, store: store}
+}
+
 func (h *Handler) Close() {
 	h.store.Close()
 }
@@ -33,6 +37,6 @@ func (h *Handler) GetAccount(ctx context.Context, name string) (pb.Account, erro
 	return h.store.GetAccountByName(ctx, name)
 
 }
-func NewHandler(cfg *config.Config, log *zap.SugaredLogger, store *store.Store) *Handler {
-	return &Handler{cfg: cfg, log: log, store: store}
+func (h *Handler) GetCurrency(ctx context.Context) {
+	return h.store.GetCurrency(ctx)
 }
