@@ -43,3 +43,9 @@ func (s *Server) Close() {
 func (*Server) Ping(ctx context.Context, req *pb.PingRequest) (*pb.PingResponse, error) {
 	return &pb.PingResponse{}, nil
 }
+func (s *Server) GetConfig(ctx context.Context, req *pb.GetConfigRequest) (*pb.GetConfigResponse, error) {
+	s.handler.GetConfig(ctx, req.GetServiceName())
+	return &pb.GetConfigResponse{pb.ServiceConfig{
+		GrpcPort: 0,
+	}}, nil
+}
