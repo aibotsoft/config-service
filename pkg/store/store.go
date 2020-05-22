@@ -51,6 +51,12 @@ func (s *Store) GetAccountByName(ctx context.Context, name string) (pb.Account, 
 
 func (s *Store) GetCurrency(ctx context.Context) ([]pb.Currency, error) {
 	var cur []pb.Currency
-	err := s.db.SelectContext(ctx, &cur, "select * from dbo.Currency")
+	err := s.db.SelectContext(ctx, &cur, "select Id, Code, Value from dbo.Currency")
 	return cur, err
+}
+
+func (s *Store) GetServices(ctx context.Context) ([]pb.BetService, error) {
+	var ser []pb.BetService
+	err := s.db.SelectContext(ctx, &ser, "select a.Id, a.ServiceName FortedName, p.ServiceName, p.GrpcPort from dbo.Account a join dbo.Port p on a.Id = p.AccountId")
+	return ser, err
 }

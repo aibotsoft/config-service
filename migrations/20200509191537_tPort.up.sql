@@ -3,6 +3,7 @@ create table dbo.Port
     Id          tinyint identity not null,
     ServiceName varchar(100)     not null,
     GrpcPort    int              not null,
+    AccountId   int,
     constraint PK_Port primary key (Id),
     constraint UI_GrpcPort unique (GrpcPort),
 )

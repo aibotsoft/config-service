@@ -41,7 +41,8 @@ func (s *Server) Close() {
 	s.handler.Close()
 	s.log.Debug("end gRPC server gracefulStop")
 }
-func (*Server) Ping(ctx context.Context, req *pb.PingRequest) (*pb.PingResponse, error) {
+func (s *Server) Ping(ctx context.Context, req *pb.PingRequest) (*pb.PingResponse, error) {
+	s.log.Info("ping request")
 	return &pb.PingResponse{}, nil
 }
 func (s *Server) GetConfig(ctx context.Context, req *pb.GetConfigRequest) (*pb.GetConfigResponse, error) {
@@ -66,4 +67,12 @@ func (s *Server) GetCurrency(ctx context.Context, req *pb.GetCurrencyRequest) (*
 		return nil, status.Errorf(codes.Internal, "get currency error")
 	}
 	return &pb.GetCurrencyResponse{CurrencyList: currency}, nil
+}
+func (s *Server) GetServices(ctx context.Context, req *pb.GetServicesRequest) (*pb.GetServicesResponse, error) {
+	services, err := s.handler.GetServices(ctx)
+	if err != nil {
+		s.log.Infow("get services error")
+		return nil, status.Errorf(codes.Internal, "get services error")
+	}
+	return &pb.GetServicesResponse{Services: services}, nil
 }
