@@ -43,10 +43,28 @@ func (s *Store) GetPortByName(ctx context.Context, serviceName string) (int64, e
 	return port, nil
 }
 
-func (s *Store) GetAccountByName(ctx context.Context, name string) (pb.Account, error) {
-	var acc pb.Account
-	err := s.db.GetContext(ctx, &acc, "select Id, AccountType, CurrencyCode, ServiceName, Username, Password, Commission, Share from dbo.Account where ServiceName=@p1", name)
-	return acc, err
+//func (s *Store) GetAccountByName(ctx context.Context, name string) (pb.Account, error) {
+//	var acc pb.Account
+//	err := s.db.GetContext(ctx, &acc, "select Id, AccountType, CurrencyCode, ServiceName, Username, Password, Commission, Share from dbo.Account where ServiceName=@p1", name)
+//	return acc, err
+//}
+const accQ = `
+select a.Id,
+       AccountType,
+       CurrencyCode,
+       a.ServiceName,
+       Username,
+       Password,
+       Commission,
+       Share
+from dbo.Account a
+join dbo.Port P on a.Id = P.AccountId
+where p.ServiceName = @p1
+`
+
+func (s *Store) GetAccountByServiceName(ctx context.Context, name string) (acc pb.Account, err error) {
+	err = s.db.GetContext(ctx, &acc, accQ, name)
+	return
 }
 
 func (s *Store) GetCurrency(ctx context.Context) ([]pb.Currency, error) {

@@ -10,9 +10,8 @@ import (
 )
 
 type Handler struct {
-	cfg *config.Config
-	log *zap.SugaredLogger
-	//api        *api.Api
+	cfg   *config.Config
+	log   *zap.SugaredLogger
 	store *store.Store
 }
 
@@ -34,7 +33,8 @@ func (h *Handler) GetConfig(ctx context.Context, serviceName string) (pb.Service
 }
 
 func (h *Handler) GetAccount(ctx context.Context, name string) (pb.Account, error) {
-	return h.store.GetAccountByName(ctx, name)
+	//return h.store.GetAccountByName(ctx, name)
+	return h.store.GetAccountByServiceName(ctx, name)
 
 }
 func (h *Handler) GetCurrency(ctx context.Context) ([]pb.Currency, error) {

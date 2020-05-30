@@ -34,7 +34,7 @@ func TestHandler_GetConfig(t *testing.T) {
 func TestHandler_GetAccount(t *testing.T) {
 	got, err := h.GetAccount(context.Background(), "fuck-off")
 	assert.Error(t, err)
-	got, err = h.GetAccount(context.Background(), "Sbobet")
+	got, err = h.GetAccount(context.Background(), "sbo-service")
 	if assert.NoError(t, err) {
 		assert.NotEmpty(t, got)
 	}
