@@ -1,0 +1,33 @@
+name: workflow
+on: [push]
+
+jobs:
+  build:
+    name: Build-Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - run: go version
+#      - uses: actions/setup-go@v2-beta
+#        with:
+#          go-version: 1.14
+      - uses: actions/checkout@master
+
+      - name: Cache go modules
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Delete replace
+        run: |
+            go mod edit -dropreplace github.com/aibotsoft/micro
+            go mod edit -dropreplace github.com/aibotsoft/gen
+
+#      - name: Test
+#        run: go test ./...
+
+      - name: Deploy
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: make docker_deploy
