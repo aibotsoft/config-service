@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"net"
+	"strconv"
 )
 
 type Server struct {
@@ -26,7 +27,11 @@ func NewServer(cfg *config.Config, log *zap.SugaredLogger, handler *handler.Hand
 }
 
 func (s *Server) Serve() error {
-	addr := net.JoinHostPort("", s.cfg.Service.GrpcPort)
+	getConfig, err := s.handler.GetConfig(context.Background(), s.cfg.Service.Name)
+	if err != nil {
+		return err
+	}
+	addr := net.JoinHostPort("", strconv.FormatInt(getConfig.GetGrpcPort(), 10))
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		return errors.Wrap(err, "net.Listen error")
