@@ -42,7 +42,7 @@ func (s *Server) Close() {
 	s.log.Debug("end gRPC server gracefulStop")
 }
 func (s *Server) Ping(ctx context.Context, req *pb.PingRequest) (*pb.PingResponse, error) {
-	s.log.Info("ping request")
+	//s.log.Info("ping request")
 	return &pb.PingResponse{}, nil
 }
 func (s *Server) GetConfig(ctx context.Context, req *pb.GetConfigRequest) (*pb.GetConfigResponse, error) {

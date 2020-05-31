@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	pb "github.com/aibotsoft/gen/confpb"
+	api "github.com/aibotsoft/gen/pinapi"
 	"github.com/aibotsoft/micro/cache"
 	"github.com/aibotsoft/micro/config"
 	"github.com/dgraph-io/ristretto"
@@ -77,4 +78,9 @@ func (s *Store) GetServices(ctx context.Context) ([]pb.BetService, error) {
 	var ser []pb.BetService
 	err := s.db.SelectContext(ctx, &ser, "select a.Id, a.ServiceName FortedName, p.ServiceName, p.GrpcPort from dbo.Account a join dbo.Port p on a.Id = p.AccountId")
 	return ser, err
+}
+
+func (s *Store) SaveCurrency(ctx context.Context, resp []api.Currency) error {
+	s.log.Infow("", "", resp)
+	return nil
 }

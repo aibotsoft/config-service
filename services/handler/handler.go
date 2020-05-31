@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"github.com/aibotsoft/config-service/pkg/pin_client"
 	"github.com/aibotsoft/config-service/pkg/store"
 	pb "github.com/aibotsoft/gen/confpb"
 	"github.com/aibotsoft/micro/config"
@@ -10,13 +11,14 @@ import (
 )
 
 type Handler struct {
-	cfg   *config.Config
-	log   *zap.SugaredLogger
-	store *store.Store
+	cfg       *config.Config
+	log       *zap.SugaredLogger
+	store     *store.Store
+	pinClient *pin_client.Client
 }
 
 func NewHandler(cfg *config.Config, log *zap.SugaredLogger, store *store.Store) *Handler {
-	return &Handler{cfg: cfg, log: log, store: store}
+	return &Handler{cfg: cfg, log: log, store: store, pinClient: pin_client.NewClient(cfg, log)}
 }
 
 func (h *Handler) Close() {
