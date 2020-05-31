@@ -16,7 +16,7 @@ func TestMain(m *testing.M) {
 	cfg := config.New()
 	log := logger.New()
 	db := sqlserver.MustConnectX(cfg)
-	sto := store.NewStore(cfg, log, db)
+	sto := store.New(cfg, log, db)
 	h = NewHandler(cfg, log, sto)
 	m.Run()
 	h.Close()

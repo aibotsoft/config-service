@@ -1,13 +1,14 @@
 create table dbo.Currency
 (
-    Code  varchar(6)    not null,
-    Value decimal(9, 5) not null,
+    Code      varchar(6)                                    not null,
+    Value     decimal(19, 9)                                 not null,
+    UpdatedAt datetimeoffset(0) default sysdatetimeoffset() not null,
     constraint PK_Currency primary key (Code),
 )
 create type dbo.CurrencyType as table
 (
     Code  varchar(6) not null,
-    Value decimal(9, 5),
+    Value decimal(19, 9),
     primary key (Code)
 )
 

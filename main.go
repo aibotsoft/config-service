@@ -24,10 +24,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	sto := store.NewStore(cfg, log, db)
+	sto := store.New(cfg, log, db)
 	h := handler.NewHandler(cfg, log, sto)
+	go h.CurrencyJob()
 
-	//sboApi:=api.NewApi(cfg, log )
 	//au := auth.NewAuth(cfg, log, sto, sboApi)
 	s := server.NewServer(cfg, log, h)
 

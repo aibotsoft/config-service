@@ -6,9 +6,12 @@ import (
 	api "github.com/aibotsoft/gen/pinapi"
 	"github.com/aibotsoft/micro/cache"
 	"github.com/aibotsoft/micro/config"
+	mssql "github.com/denisenkom/go-mssqldb"
 	"github.com/dgraph-io/ristretto"
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"time"
 )
 
 type Store struct {
@@ -18,7 +21,7 @@ type Store struct {
 	Cache *ristretto.Cache
 }
 
-func NewStore(cfg *config.Config, log *zap.SugaredLogger, db *sqlx.DB) *Store {
+func New(cfg *config.Config, log *zap.SugaredLogger, db *sqlx.DB) *Store {
 	return &Store{log: log, db: db, Cache: cache.NewCache(cfg)}
 }
 
@@ -68,19 +71,35 @@ func (s *Store) GetAccountByServiceName(ctx context.Context, name string) (acc p
 	return
 }
 
-func (s *Store) GetCurrency(ctx context.Context) ([]pb.Currency, error) {
+func (s *Store) GetCurrency(ctx context.Context) (cur []pb.Currency, err error) {
+	got, b := s.Cache.Get("GetCurrency")
+	if b {
+		s.log.Info("got from cache")
+		return got.([]pb.Currency), nil
+	}
+	err = s.db.SelectContext(ctx, &cur, "select Code, Value from dbo.Currency")
+	if err != nil {
+		return nil, err
+	}
+	s.Cache.SetWithTTL("GetCurrency", cur, 1, time.Hour)
+	return
+}
+
+func (s *Store) GetServices(ctx context.Context) (ser []pb.BetService, err error) {
+	err = s.db.SelectContext(ctx, &ser, "select a.Id, a.ServiceName FortedName, p.ServiceName, p.GrpcPort from dbo.Account a join dbo.Port p on a.Id = p.AccountId")
+	return
+}
+
+func (s *Store) SaveCurrency(ctx context.Context, currencyList []api.Currency) error {
 	var cur []pb.Currency
-	err := s.db.SelectContext(ctx, &cur, "select Id, Code, Value from dbo.Currency")
-	return cur, err
-}
-
-func (s *Store) GetServices(ctx context.Context) ([]pb.BetService, error) {
-	var ser []pb.BetService
-	err := s.db.SelectContext(ctx, &ser, "select a.Id, a.ServiceName FortedName, p.ServiceName, p.GrpcPort from dbo.Account a join dbo.Port p on a.Id = p.AccountId")
-	return ser, err
-}
-
-func (s *Store) SaveCurrency(ctx context.Context, resp []api.Currency) error {
-	s.log.Infow("", "", resp)
+	//s.log.Infow("", "", currencyList)
+	for i := range currencyList {
+		cur = append(cur, pb.Currency{Code: currencyList[i].GetCode(), Value: currencyList[i].GetRate()})
+	}
+	tvp := mssql.TVP{TypeName: "CurrencyType", Value: cur}
+	_, err := s.db.ExecContext(ctx, "dbo.uspSaveCurrency", tvp)
+	if err != nil {
+		return errors.Wrap(err, "uspSaveCurrency error")
+	}
 	return nil
 }
