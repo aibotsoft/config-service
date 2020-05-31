@@ -10,13 +10,19 @@ const CurrencyJobPeriod = time.Hour
 
 func (h *Handler) CurrencyJob() {
 	for {
+		start := time.Now()
+		if !h.NetStatus {
+			h.log.Info("netStatus_not_ok")
+			time.Sleep(time.Minute)
+			continue
+		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		err := h.CurrencyRound(ctx)
 		cancel()
 		if err != nil {
 			h.log.Error(err)
 		} else {
-			h.log.Debug("CurrencyJob_done")
+			h.log.Debugw("CurrencyJob_done", "time", time.Since(start))
 		}
 		time.Sleep(CurrencyJobPeriod)
 	}

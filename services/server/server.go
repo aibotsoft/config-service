@@ -64,7 +64,7 @@ func (s *Server) GetCurrency(ctx context.Context, req *pb.GetCurrencyRequest) (*
 	currency, err := s.handler.GetCurrency(ctx)
 	if err != nil {
 		s.log.Infow("get currency error")
-		return nil, status.Errorf(codes.Internal, "get currency error")
+		return nil, status.Errorf(codes.Internal, "get_currency_error")
 	}
 	return &pb.GetCurrencyResponse{CurrencyList: currency}, nil
 }
@@ -75,4 +75,7 @@ func (s *Server) GetServices(ctx context.Context, req *pb.GetServicesRequest) (*
 		return nil, status.Errorf(codes.Internal, "get services error")
 	}
 	return &pb.GetServicesResponse{Services: services}, nil
+}
+func (s *Server) GetNetStatus(ctx context.Context, req *pb.GetNetStatusRequest) (*pb.GetNetStatusResponse, error) {
+	return &pb.GetNetStatusResponse{Status: s.handler.NetStatus}, nil
 }

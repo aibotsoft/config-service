@@ -8,6 +8,7 @@ import (
 	"github.com/aibotsoft/micro/config"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"net/http"
 )
 
 type Handler struct {
@@ -15,10 +16,12 @@ type Handler struct {
 	log       *zap.SugaredLogger
 	store     *store.Store
 	pinClient *pin_client.Client
+	client    *http.Client
+	NetStatus bool
 }
 
 func NewHandler(cfg *config.Config, log *zap.SugaredLogger, store *store.Store) *Handler {
-	return &Handler{cfg: cfg, log: log, store: store, pinClient: pin_client.NewClient(cfg, log)}
+	return &Handler{cfg: cfg, log: log, store: store, pinClient: pin_client.NewClient(cfg, log), client: &http.Client{}}
 }
 
 func (h *Handler) Close() {

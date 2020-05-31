@@ -27,8 +27,8 @@ func main() {
 	sto := store.New(cfg, log, db)
 	h := handler.NewHandler(cfg, log, sto)
 	go h.CurrencyJob()
+	go h.CheckInetJob()
 
-	//au := auth.NewAuth(cfg, log, sto, sboApi)
 	s := server.NewServer(cfg, log, h)
 
 	// Инициализируем Close
@@ -38,9 +38,6 @@ func main() {
 		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 		errc <- fmt.Errorf("%s", <-c)
 	}()
-
-	//c:=collector.NewCollector(cfg, log, sboApi, sto, au)
-	//go c.CollectJob()
 
 	go func() { errc <- s.Serve() }()
 	defer func() { s.Close() }()
