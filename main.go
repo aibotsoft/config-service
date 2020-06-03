@@ -17,7 +17,7 @@ import (
 func main() {
 	cfg := config.New()
 	log := logger.New()
-	log.Infow("Begin service", "name", cfg.Service.Name)
+	log.Infow("Begin service", "name", cfg.Service)
 	db := sqlserver.MustConnectX(cfg)
 	err := mig.MigrateUp(cfg, log, db)
 	if err != nil {

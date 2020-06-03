@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	api "github.com/aibotsoft/gen/pinapi"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -38,7 +39,7 @@ func (h *Handler) CurrencyRound(ctx context.Context) error {
 func (h *Handler) CollectCurrency(ctx context.Context) ([]api.Currency, error) {
 	account, err := h.GetAccount(ctx, "pin-service")
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "GetAccount error")
 	}
 	auth := context.WithValue(ctx, api.ContextBasicAuth, api.BasicAuth{UserName: account.Username, Password: account.Password})
 	resp, err := h.pinClient.GetCurrencies(auth)
