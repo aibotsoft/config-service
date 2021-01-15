@@ -1,13 +1,12 @@
 module github.com/aibotsoft/config-service
 
-go 1.14
+go 1.15
 
 require (
 	github.com/aibotsoft/gen v0.0.0-20200531091936-c4d5d714bf82
 	github.com/aibotsoft/micro v0.0.0-20200531091141-36c4ab85b13e
 	github.com/denisenkom/go-mssqldb v0.0.0-20200428022330-06a60b6afbbc
 	github.com/dgraph-io/ristretto v0.0.2
-	github.com/golang-migrate/migrate/v4 v4.11.0 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/pkg/errors v0.9.1
