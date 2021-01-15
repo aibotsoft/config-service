@@ -21,6 +21,6 @@ require (
 	google.golang.org/grpc v1.29.1
 )
 
-replace github.com/aibotsoft/micro => ../micro
+//replace github.com/aibotsoft/micro => ../micro
 
-replace github.com/aibotsoft/gen => ../gen
+//replace github.com/aibotsoft/gen => ../gen

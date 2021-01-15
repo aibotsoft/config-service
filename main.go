@@ -7,7 +7,6 @@ import (
 	"github.com/aibotsoft/config-service/services/server"
 	"github.com/aibotsoft/micro/config"
 	"github.com/aibotsoft/micro/logger"
-	"github.com/aibotsoft/micro/mig"
 	"github.com/aibotsoft/micro/sqlserver"
 	"os"
 	"os/signal"
@@ -19,10 +18,10 @@ func main() {
 	log := logger.New()
 	log.Infow("Begin service", "name", cfg.Service)
 	db := sqlserver.MustConnectX(cfg)
-	err := mig.MigrateUp(cfg, log, db)
-	if err != nil {
-		log.Fatal(err)
-	}
+	//err := mig.MigrateUp(cfg, log, db)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
 	sto := store.New(cfg, log, db)
 	h := handler.NewHandler(cfg, log, sto)
